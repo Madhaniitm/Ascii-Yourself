@@ -26,13 +26,73 @@ const App: React.FC = () => {
     const video = videoRef.current;
     if (!video || video.readyState < 2) return;
     const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth || 1280;
-    canvas.height = video.videoHeight || 720;
+    const W = video.videoWidth || 1280;
+    const H = video.videoHeight || 720;
+    canvas.width = W;
+    canvas.height = H;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    ctx.translate(canvas.width, 0);
+
+    // Draw mirrored camera frame
+    ctx.translate(W, 0);
     ctx.scale(-1, 1);
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(video, 0, 0, W, H);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+    // Overlay message if present
+    if (message) {
+      const text = `💝 ${message} 💝`;
+      const padding = 24;
+      const maxWidth = W - padding * 2;
+      const fontSize = Math.max(22, Math.floor(W / 32));
+      ctx.font = `${fontSize}px Georgia, serif`;
+      ctx.textBaseline = 'top';
+
+      // Word-wrap
+      const words = text.split(' ');
+      const lines: string[] = [];
+      let current = '';
+      for (const word of words) {
+        const test = current ? `${current} ${word}` : word;
+        if (ctx.measureText(test).width > maxWidth && current) {
+          lines.push(current);
+          current = word;
+        } else {
+          current = test;
+        }
+      }
+      if (current) lines.push(current);
+
+      const lineH = fontSize * 1.5;
+      const boxH = lines.length * lineH + padding * 2;
+      const boxY = H - boxH - 32;
+
+      // Semi-transparent gradient box
+      const grad = ctx.createLinearGradient(0, boxY, W, boxY + boxH);
+      grad.addColorStop(0, 'rgba(220,20,120,0.72)');
+      grad.addColorStop(1, 'rgba(120,20,220,0.72)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.roundRect(padding, boxY, W - padding * 2, boxH, 16);
+      ctx.fill();
+
+      // Gold border
+      ctx.strokeStyle = 'rgba(255,215,0,0.7)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Message text
+      ctx.fillStyle = '#ffffff';
+      ctx.shadowColor = 'rgba(0,0,0,0.8)';
+      ctx.shadowBlur = 6;
+      lines.forEach((line, i) => {
+        const lineY = boxY + padding + i * lineH;
+        const lineX = (W - ctx.measureText(line).width) / 2;
+        ctx.fillText(line, lineX, lineY);
+      });
+      ctx.shadowBlur = 0;
+    }
+
     const link = document.createElement('a');
     link.href = canvas.toDataURL('image/png');
     link.download = `thanga_pushpam_${Date.now()}.png`;
