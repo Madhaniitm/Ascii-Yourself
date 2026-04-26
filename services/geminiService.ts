@@ -1,9 +1,12 @@
-export const getCheesyness = async (base64Image: string): Promise<string> => {
+export const getCheesyness = async (base64Image: string, usedLines: string[] = []): Promise<string> => {
   try {
     const apiKey = process.env.CHATBOT_API_KEY;
     if (!apiKey) throw new Error("API Key not found");
 
     const base64 = base64Image.replace(/^data:image\/(png|jpeg|jpg|webp);base64,/, "");
+    const avoidText = usedLines.length > 0
+      ? ` NEVER repeat or say anything close to: "${usedLines.slice(-4).join('" or "')}". Be completely different and more creative!`
+      : '';
 
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
@@ -18,7 +21,14 @@ export const getCheesyness = async (base64Image: string): Promise<string> => {
             role: "user",
             content: [
               { type: "image_url", image_url: { url: `data:image/jpeg;base64,${base64}` } },
-              { type: "text", text: "Look at this image and give me ONE crazy, cheesy, funny, specific compliment or pickup line based exactly on what you see. Be creative and hilarious. Just one line, no formatting, no quotes, no labels." }
+              {
+                type: "text",
+                text: `Study this person's photo carefully — their exact facial expression, body language, gesture, pose, what they're wearing, their eyes, smile, vibe, everything specific about THIS moment.
+
+Write ONE single devastatingly cheesy, sweet, romantic, over-the-top compliment or pickup line that is SO specific to exactly what you see it could only be about THIS person in THIS moment. Make it so cheesy it physically hurts. If they're smiling — mention it. If they're making a face — make it about that. If they're wearing something specific — reference it. Make it warm, funny, irresistible.${avoidText}
+
+One line only. No quotes. No labels. No formatting. Pure weapons-grade cheese.`
+              }
             ]
           }
         ],
