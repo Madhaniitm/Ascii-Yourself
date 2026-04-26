@@ -1,5 +1,7 @@
 import { DENSITY_MAPS, AsciiOptions } from '../types';
 
+const NAME_PATTERN = "ThangaPushpam ";
+
 export const getAsciiChar = (brightness: number, densityType: keyof typeof DENSITY_MAPS): string => {
   const map = DENSITY_MAPS[densityType];
   const index = Math.floor((brightness / 255) * (map.length - 1));
@@ -12,7 +14,7 @@ export const processFrame = (
   height: number,
   options: AsciiOptions
 ): string[] => {
-  const { contrast, brightness, density } = options;
+  const { contrast, brightness } = options;
   const frameData = ctx.getImageData(0, 0, width, height);
   const data = frameData.data;
   const rows: string[] = [];
@@ -41,7 +43,9 @@ export const processFrame = (
       // Clamp
       cBrightness = Math.max(0, Math.min(255, cBrightness));
 
-      row += getAsciiChar(cBrightness, density);
+      row += cBrightness > 128
+        ? NAME_PATTERN[(y * width + x) % NAME_PATTERN.length]
+        : ' ';
     }
     rows.push(row);
   }

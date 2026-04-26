@@ -1,11 +1,24 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AsciiCanvas } from './components/AsciiCanvas';
 import { ControlPanel } from './components/ControlPanel';
-import { AnalysisModal } from './components/AnalysisModal';
-import { AsciiOptions, AnalysisResult } from './types';
-import { analyzeImage } from './services/geminiService';
-import { Camera, Terminal, Zap, ScanEye } from 'lucide-react';
-import { playAnalysisStartSound, playAnalysisCompleteSound } from './utils/soundEffects';
+import { AsciiOptions } from './types';
+import { Terminal } from 'lucide-react';
+import { playAnalysisCompleteSound } from './utils/soundEffects';
+
+const CHEESY_LINES = [
+  "You are not just a face. You are a rendering target.",
+  "Beauty is in the eye of the ASCII beholder.",
+  "Even pixels can't contain your vibes.",
+  "Neural scan complete. Result: suspiciously radiant.",
+  "Your face just crashed my density algorithm.",
+  "Warning: charisma levels exceeding safe parameters.",
+  "404: Flaw not found.",
+  "You had me at 'ThangaPushpam'.",
+  "Processing complete. Result: dangerously charming.",
+  "ALERT: You are too beautiful for this resolution.",
+  "The matrix chose wisely.",
+  "ThangaPushpam protocol engaged. Confidence: MAXIMUM.",
+];
 
 const App: React.FC = () => {
   const [options, setOptions] = useState<AsciiOptions>({
@@ -14,34 +27,29 @@ const App: React.FC = () => {
     contrast: 1.0,
     colorMode: 'matrix',
     density: 'complex',
-    resolution: 0.2, // Factor of window size
+    resolution: 0.2,
   });
 
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [lineIndex, setLineIndex] = useState(0);
+  const [visible, setVisible] = useState(true);
 
-  const handleCapture = useCallback(async (imageData: string) => {
-    setIsAnalyzing(true);
-    setAnalysisResult(null);
-    setIsModalOpen(true);
-    playAnalysisStartSound();
+  const showNextLine = () => {
+    setVisible(false);
+    setTimeout(() => {
+      setLineIndex((i: number) => (i + 1) % CHEESY_LINES.length);
+      setVisible(true);
+    }, 400);
+  };
 
-    try {
-      const result = await analyzeImage(imageData);
-      setAnalysisResult(result);
-      playAnalysisCompleteSound();
-    } catch (error) {
-      console.error("Analysis failed:", error);
-      setAnalysisResult({
-        description: "SYSTEM ERROR: Neural link connection failed.",
-        tags: ["ERROR", "OFFLINE"],
-        threatLevel: "UNKNOWN"
-      });
-    } finally {
-      setIsAnalyzing(false);
-    }
+  useEffect(() => {
+    const interval = setInterval(showNextLine, 15000);
+    return () => clearInterval(interval);
   }, []);
+
+  const handleCapture = () => {
+    showNextLine();
+    playAnalysisCompleteSound();
+  };
 
   return (
     <div className="relative w-full h-screen bg-black overflow-hidden flex flex-col">
@@ -58,6 +66,15 @@ const App: React.FC = () => {
         </div>
       </header>
 
+      {/* Cheesy Line Banner */}
+      <div
+        className={`absolute top-20 left-0 right-0 flex justify-center z-30 pointer-events-none transition-opacity duration-500 ${visible ? 'opacity-100' : 'opacity-0'}`}
+      >
+        <div className="font-mono text-sm text-green-400 border border-green-500/40 bg-black/70 px-6 py-2 shadow-[0_0_15px_rgba(0,255,0,0.15)] max-w-lg text-center">
+          &gt; {CHEESY_LINES[lineIndex]}
+        </div>
+      </div>
+
       {/* Main Canvas Area */}
       <main className="flex-grow relative z-10">
         <AsciiCanvas options={options} onCapture={handleCapture} />
@@ -66,16 +83,6 @@ const App: React.FC = () => {
       {/* Controls */}
       <ControlPanel options={options} setOptions={setOptions} />
 
-      {/* Loading/Analysis Modal */}
-      {isModalOpen && (
-        <AnalysisModal 
-          isOpen={isModalOpen} 
-          onClose={() => setIsModalOpen(false)} 
-          isLoading={isAnalyzing}
-          result={analysisResult}
-        />
-      )}
-      
       {/* Decorative overlaid scanlines */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-10 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]"></div>
     </div>

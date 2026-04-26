@@ -17,7 +17,7 @@ export const DENSITY_MAPS = {
   simple: " .:-=+*#%@",
   // User requested characters <.!@#$%^&*, sorted by visual density for smoothness
   // Original order was keyboard layout which causes flickering
-  complex: " .^!*<&%$#@", 
+  complex: " .^!*<&%$#@",
   binary: " 01",
   blocks: " ░▒▓█",
 };
