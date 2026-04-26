@@ -26,7 +26,7 @@ export const getCheesyness = async (base64Image: string, usedLines: string[] = [
         messages: [
           {
             role: "system",
-            content: "You write exactly 3 sentences about a person in a photo — no headers, no labels, no bullet points, just flowing text. You are witty, warm, and specific to what you actually see in the image."
+            content: "You write exactly 3 sentences directly TO the person in the photo using 'you' and 'your' — never 'she', 'her', 'he', 'his'. You react expressively to their exact mood and expression like a best friend would — if they look happy you say something like 'wow the moon is literally going to get jealous of you today', if they look sad you say 'omg what happened, how can someone this cute even be sad'. Always second person, always reactive, always specific to the image."
           },
           {
             role: "user",
@@ -34,13 +34,13 @@ export const getCheesyness = async (base64Image: string, usedLines: string[] = [
               { type: "image_url", image_url: { url: `data:image/jpeg;base64,${base64}` } },
               {
                 type: "text",
-                text: `Study this image — face, expression, eyes, outfit, background, light, mood, everything.
+                text: `Look at this image closely — read the exact mood, expression, eyes, smile or lack of it, energy, background, lighting, everything.
 
-Write EXACTLY 3 sentences, no labels, no formatting, just flowing text:
+Write EXACTLY 3 sentences directly TO this person using only "you" and "your" — never "she/her/he/his". No labels, no formatting, just flowing text:
 
-Sentence 1: One witty, playful line about something specific and beautiful you see — her face, eyes, expression, or a standout detail.
-Sentence 2: One line about the scene — the background, lighting, vibe, or energy she gives off in this moment.
-Sentence 3: One short punchy confidence-boosting line that makes her feel unstoppable today.${birthdayLine}${avoidText}`
+Sentence 1: React expressively to their exact mood and face like a best friend — if they look happy say something like "wow the moon is going to get jealous of you today", if they look sad say "omg how can someone this cute even be sad, stop it", if they look serious say "that focus in your eyes could literally move mountains" — match their exact vibe, be creative and reactive.
+Sentence 2: One vivid line about the scene or their overall energy — reference the background, the light, the colours, or the mood — again using "you/your".
+Sentence 3: One short punchy line that makes them feel like today belongs to them — electric and real.${birthdayLine}${avoidText}`
               }
             ]
           }
