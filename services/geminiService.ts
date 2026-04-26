@@ -23,11 +23,7 @@ export const getCheesyness = async (base64Image: string, usedLines: string[] = [
               { type: "image_url", image_url: { url: `data:image/jpeg;base64,${base64}` } },
               {
                 type: "text",
-                text: `Study this person's photo carefully — their exact facial expression, body language, gesture, pose, what they're wearing, their eyes, smile, vibe, everything specific about THIS moment.
-
-Write ONE single devastatingly cheesy, sweet, romantic, over-the-top compliment or pickup line that is SO specific to exactly what you see it could only be about THIS person in THIS moment. Make it so cheesy it physically hurts. If they're smiling — mention it. If they're making a face — make it about that. If they're wearing something specific — reference it. Make it warm, funny, irresistible.${avoidText}
-
-One line only. No quotes. No labels. No formatting. Pure weapons-grade cheese.`
+                text: `Look at this person — their expression, gesture, pose, outfit, energy. Write ONE short punchy feel-good line that makes her feel like the most radiant, unstoppable, magical human on the planet. Specific to what you see. Warm, cheesy, electric — the kind that puts a smile on her face all day. Max 12 words. No intros, no labels, no quotes.${avoidText}`
               }
             ]
           }

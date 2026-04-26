@@ -22,6 +22,25 @@ const App: React.FC = () => {
     return () => stream?.getTracks().forEach(t => t.stop());
   }, []);
 
+  const handleSnapshot = () => {
+    const video = videoRef.current;
+    if (!video || video.readyState < 2) return;
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth || 1280;
+    canvas.height = video.videoHeight || 720;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.translate(canvas.width, 0);
+    ctx.scale(-1, 1);
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const link = document.createElement('a');
+    link.href = canvas.toDataURL('image/png');
+    link.download = `thanga_pushpam_${Date.now()}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const handleClick = async () => {
     if (isLoadingRef.current) return;
     const video = videoRef.current;
@@ -88,28 +107,26 @@ const App: React.FC = () => {
       </div>
 
       {/* Title */}
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, textAlign: 'center', padding: '18px 16px 0', zIndex: 10 }}>
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, textAlign: 'center', padding: '16px 16px 0', zIndex: 10 }}>
         <h1 style={{
           margin: 0,
           fontSize: 'clamp(1.1rem, 4.5vw, 2.4rem)',
           fontWeight: 900,
           fontFamily: "'Georgia', 'Times New Roman', serif",
           letterSpacing: '2px',
-          background: 'linear-gradient(90deg, #ffd700, #ff69b4, #ff1493, #da70d6, #ffd700)',
-          backgroundSize: '300% auto',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          animation: 'shimmer 2.5s linear infinite',
-          textShadow: 'none',
+          color: '#ffffff',
+          textShadow: '-2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0 0 12px #ff1493, 0 0 24px #ff1493',
+          WebkitTextFillColor: '#ffffff',
         }}>
           🎂 Happy Birthday Thanga Pushpam 🎂
         </h1>
         <p style={{
           margin: '4px 0 0',
-          color: 'rgba(255,220,100,0.85)',
+          color: '#ffffff',
           fontSize: 'clamp(0.7rem, 1.8vw, 0.95rem)',
           fontFamily: 'cursive',
           letterSpacing: '1px',
+          textShadow: '0 0 6px #000, 0 0 12px #000',
         }}>
           ✨ The universe's most precious person ✨
         </p>
@@ -149,8 +166,8 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* THE BUTTON */}
-      <div style={{ position: 'absolute', bottom: '48px', left: 0, right: 0, display: 'flex', justifyContent: 'center', zIndex: 20 }}>
+      {/* BUTTONS */}
+      <div style={{ position: 'absolute', bottom: '32px', left: 0, right: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px', zIndex: 20 }}>
         <button
           onClick={handleClick}
           disabled={isLoading}
@@ -158,21 +175,40 @@ const App: React.FC = () => {
             padding: '18px 32px',
             fontSize: 'clamp(0.85rem, 2.5vw, 1.1rem)',
             fontWeight: 900,
-            color: 'white',
-            background: 'linear-gradient(270deg, #ff6b9d, #c44dff, #4dc8ff, #ffb347, #ff6b9d)',
+            color: '#ffffff',
+            background: 'linear-gradient(270deg, #cc0052, #7700cc, #0077cc, #cc0052)',
             backgroundSize: '400% 400%',
-            border: '3px solid rgba(255,255,255,0.85)',
+            border: '4px solid #ffffff',
             borderRadius: '60px',
             cursor: isLoading ? 'not-allowed' : 'pointer',
             letterSpacing: '0.5px',
-            textShadow: '0 2px 6px rgba(0,0,0,0.5)',
+            textShadow: '0 2px 6px rgba(0,0,0,0.8)',
+            boxShadow: '0 4px 0 #000, 0 0 0 2px #000',
             animation: isLoading ? 'none' : 'jump 1.1s ease-in-out infinite, rainbow 2.5s linear infinite, glow 1.8s ease-in-out infinite',
             opacity: isLoading ? 0.5 : 1,
             maxWidth: '90vw',
             lineHeight: 1.4,
           }}
         >
-          💌 Click me please... I want to tell you something!! 💌
+          Click me please... I want to tell you something!!
+        </button>
+        <button
+          onClick={handleSnapshot}
+          style={{
+            padding: '10px 28px',
+            fontSize: 'clamp(0.75rem, 2vw, 0.9rem)',
+            fontWeight: 800,
+            color: '#ffffff',
+            background: '#111111',
+            border: '3px solid #ffffff',
+            borderRadius: '40px',
+            cursor: 'pointer',
+            letterSpacing: '1px',
+            textShadow: '0 1px 4px rgba(0,0,0,0.8)',
+            boxShadow: '0 4px 0 #555, 0 0 0 1px #000',
+          }}
+        >
+          📸 Snap it!
         </button>
       </div>
 
@@ -190,8 +226,8 @@ const App: React.FC = () => {
           100% { background-position: 0%   50%; }
         }
         @keyframes glow {
-          0%,100% { box-shadow: 0 0 22px #ff6b9d, 0 0 45px #c44dff; }
-          50%      { box-shadow: 0 0 40px #c44dff, 0 0 80px #ff6b9d, 0 0 110px #4dc8ff; }
+          0%,100% { box-shadow: 0 4px 0 #000, 0 0 0 2px #000, 0 0 25px #cc0052, 0 0 50px #7700cc; }
+          50%      { box-shadow: 0 4px 0 #000, 0 0 0 2px #000, 0 0 40px #7700cc, 0 0 80px #0077cc; }
         }
         @keyframes shimmer {
           0%   { background-position: 0%   center; }
