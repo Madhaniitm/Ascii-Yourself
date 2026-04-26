@@ -5,7 +5,7 @@ export const getCheesyness = async (base64Image: string, usedLines: string[] = [
 
     const base64 = base64Image.replace(/^data:image\/(png|jpeg|jpg|webp);base64,/, "");
     const avoidText = usedLines.length > 0
-      ? ` NEVER repeat or say anything close to: "${usedLines.slice(-4).join('" or "')}". Be completely different and more creative!`
+      ? ` Do NOT repeat or resemble: "${usedLines.slice(-4).join('" / "')}".`
       : '';
 
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -18,17 +18,22 @@ export const getCheesyness = async (base64Image: string, usedLines: string[] = [
         model: "meta-llama/llama-4-scout-17b-16e-instruct",
         messages: [
           {
+            role: "system",
+            content: "You are a feel-good compliment generator. You ONLY output one short line. You always base your line on specific visual details you observe — the background, lighting, mood, expression, colors, setting, what the person is doing. Never generic. Always grounded in exactly what you see."
+          },
+          {
             role: "user",
             content: [
               { type: "image_url", image_url: { url: `data:image/jpeg;base64,${base64}` } },
               {
                 type: "text",
-                text: `Look at this person — their expression, gesture, pose, outfit, energy. Write ONE short punchy feel-good line that makes her feel like the most radiant, unstoppable, magical human on the planet. Specific to what you see. Warm, cheesy, electric — the kind that puts a smile on her face all day. Max 12 words. No intros, no labels, no quotes.${avoidText}`
+                text: `Study this image carefully: the background, the lighting, the mood, the colors, the person's expression and energy and what they're doing. Now write ONE punchy cheesy feel-good line that is unmistakably about THIS specific image — reference the setting, vibe, or what you see. Make her feel like the most magical person alive. Max 12 words. Just the line, nothing else.${avoidText}`
               }
             ]
           }
         ],
-        max_tokens: 150,
+        max_tokens: 80,
+        temperature: 1.0,
       }),
     });
 
