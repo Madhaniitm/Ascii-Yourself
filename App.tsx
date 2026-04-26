@@ -5,14 +5,13 @@ const App: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user');
   const isLoadingRef = useRef(false);
   const usedLinesRef = useRef<string[]>([]);
 
   useEffect(() => {
     let stream: MediaStream | null = null;
     navigator.mediaDevices.getUserMedia({
-      video: { facingMode, width: { ideal: 1280 }, height: { ideal: 720 } }
+      video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } }
     }).then(s => {
       stream = s;
       if (videoRef.current) {
@@ -21,12 +20,7 @@ const App: React.FC = () => {
       }
     }).catch(console.error);
     return () => stream?.getTracks().forEach(t => t.stop());
-  }, [facingMode]);
-
-  const handleFlip = () => {
-    setFacingMode((prev: 'user' | 'environment') => prev === 'user' ? 'environment' : 'user');
-    setMessage(null);
-  };
+  }, []);
 
   const handleSnapshot = () => {
     const video = videoRef.current;
@@ -39,11 +33,8 @@ const App: React.FC = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Mirror only for front camera
-    if (facingMode === 'user') {
-      ctx.translate(W, 0);
-      ctx.scale(-1, 1);
-    }
+    ctx.translate(W, 0);
+    ctx.scale(-1, 1);
     ctx.drawImage(video, 0, 0, W, H);
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
@@ -123,10 +114,8 @@ const App: React.FC = () => {
     canvas.height = 480;
     const ctx = canvas.getContext('2d');
     if (ctx) {
-      if (facingMode === 'user') {
-        ctx.translate(640, 0);
-        ctx.scale(-1, 1);
-      }
+      ctx.translate(640, 0);
+      ctx.scale(-1, 1);
       ctx.drawImage(video, 0, 0, 640, 480);
     }
     const frame = canvas.toDataURL('image/jpeg', 0.85);
@@ -151,36 +140,9 @@ const App: React.FC = () => {
       {/* Camera feed */}
       <video
         ref={videoRef}
-        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: facingMode === 'user' ? 'scaleX(-1)' : 'none' }}
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', transform: 'scaleX(-1)' }}
         playsInline muted autoPlay
       />
-
-      {/* Flip camera button */}
-      <button
-        onClick={handleFlip}
-        style={{
-          position: 'absolute',
-          top: 'max(env(safe-area-inset-top), 14px)',
-          right: '16px',
-          zIndex: 30,
-          background: 'rgba(0,0,0,0.55)',
-          border: '2px solid rgba(255,255,255,0.6)',
-          borderRadius: '50%',
-          width: '46px',
-          height: '46px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '1.4rem',
-          cursor: 'pointer',
-          backdropFilter: 'blur(8px)',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
-          transition: 'transform 0.2s',
-        }}
-        title="Flip camera"
-      >
-        🔄
-      </button>
 
       {/* Gradient overlay */}
       <div style={{
