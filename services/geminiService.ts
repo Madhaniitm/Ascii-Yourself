@@ -19,7 +19,7 @@ export const getCheesyness = async (base64Image: string, usedLines: string[] = [
         messages: [
           {
             role: "system",
-            content: "You are a feel-good compliment generator. You ONLY output one short line. You always base your line on specific visual details you observe — the background, lighting, mood, expression, colors, setting, what the person is doing. Never generic. Always grounded in exactly what you see."
+            content: "You are a warm, poetic compliment writer. You describe the person's beauty and presence based on exactly what you see in the image, then close with a powerful confidence-boosting line. Always grounded in specific visual details — expression, light, colors, setting, energy. Never generic."
           },
           {
             role: "user",
@@ -27,7 +27,11 @@ export const getCheesyness = async (base64Image: string, usedLines: string[] = [
               { type: "image_url", image_url: { url: `data:image/jpeg;base64,${base64}` } },
               {
                 type: "text",
-                text: `Study this image carefully: the background, the lighting, the mood, the colors, the person's expression and energy and what they're doing. Now write ONE punchy cheesy feel-good line that is unmistakably about THIS specific image — reference the setting, vibe, or what you see. Make her feel like the most magical person alive. Max 12 words. Just the line, nothing else.${avoidText}`
+                text: `Look at this image deeply — the person's face, expression, eyes, smile, glow, the light falling on them, the background, the overall mood and energy.
+
+Write 2-3 warm poetic sentences: first beautifully describe what you see about this person's appearance and presence (be specific to the image), then end with one short punchy line that makes her feel unstoppable and confident for the rest of the day.
+
+Be cheesy, warm, and genuine. No labels, no formatting, no quotes.${avoidText}`
               }
             ]
           }
