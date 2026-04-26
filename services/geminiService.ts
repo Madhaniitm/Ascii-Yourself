@@ -8,6 +8,13 @@ export const getCheesyness = async (base64Image: string, usedLines: string[] = [
       ? ` Do NOT repeat or resemble: "${usedLines.slice(-4).join('" / "')}".`
       : '';
 
+    const today = new Date();
+    const isBirthday = today.getMonth() === 3 && [28, 29, 30].includes(today.getDate()); // April = month 3
+
+    const birthdayLine = isBirthday
+      ? '\n\nIMPORTANT: The very last sentence you write must be exactly: "Happy Birthday Thanga Pushpam 🎂"'
+      : '';
+
     const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -19,7 +26,7 @@ export const getCheesyness = async (base64Image: string, usedLines: string[] = [
         messages: [
           {
             role: "system",
-            content: "You are a warm, poetic compliment writer. You describe the person's beauty and presence based on exactly what you see in the image, then close with a powerful confidence-boosting line. Always grounded in specific visual details — expression, light, colors, setting, energy. Never generic."
+            content: "You write exactly 4 sentences about a person in a photo — no headers, no labels, no bullet points, just flowing text. You are witty, warm, and specific to what you actually see in the image."
           },
           {
             role: "user",
@@ -27,16 +34,14 @@ export const getCheesyness = async (base64Image: string, usedLines: string[] = [
               { type: "image_url", image_url: { url: `data:image/jpeg;base64,${base64}` } },
               {
                 type: "text",
-                text: `Look at this image closely. Notice the person's face, eyes, expression, smile, skin, hair, the way the light hits them, their outfit, their energy, the background, the whole vibe.
+                text: `Study this image carefully — the person's face, expression, eyes, hair, skin, outfit, the background, the light, the mood, everything.
 
-Now write EXACTLY in this structure — no headers, no labels, just flowing text:
+Write EXACTLY 4 sentences, no more, no less — no labels, no formatting, just flowing text:
 
-Sentence 1: Describe one specific beautiful thing you see about her face or expression (mention something exact from the image).
-Sentence 2: Describe the overall glow, energy or presence she gives off in this moment (reference the light, background or mood).
-Sentence 3: One more warm poetic observation about her — her smile, her eyes, her style, or how she carries herself.
-Closing line: One short punchy confident line like "Today, the world is yours" or "Everything you want is already on its way to you" — make it feel electric and true.
-
-Be warm, poetic, cheesy and genuine. No bullet points, no labels, no quotes.${avoidText}`
+Sentence 1 (witty beauty): A clever, witty observation about something specific you see — her face, expression, eyes, or a detail that stands out. Be playfully specific, not generic.
+Sentence 2 (witty scene): A witty remark about her overall vibe, energy, or the setting/background — something that makes her smile reading it.
+Sentence 3 (positivity boost): A warm, sincere line that makes her feel radiant and capable — specific to her energy in this image.
+Sentence 4 (closing boost): A short punchy line that makes her feel like today is her day — electric, confident, real.${birthdayLine}${avoidText}`
               }
             ]
           }
