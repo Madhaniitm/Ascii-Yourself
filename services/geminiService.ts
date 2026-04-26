@@ -26,7 +26,7 @@ export const getCheesyness = async (base64Image: string, usedLines: string[] = [
         messages: [
           {
             role: "system",
-            content: "You write exactly 4 sentences about a person in a photo — no headers, no labels, no bullet points, just flowing text. You are witty, warm, and specific to what you actually see in the image."
+            content: "You write exactly 3 sentences about a person in a photo — no headers, no labels, no bullet points, just flowing text. You are witty, warm, and specific to what you actually see in the image."
           },
           {
             role: "user",
@@ -34,14 +34,13 @@ export const getCheesyness = async (base64Image: string, usedLines: string[] = [
               { type: "image_url", image_url: { url: `data:image/jpeg;base64,${base64}` } },
               {
                 type: "text",
-                text: `Study this image carefully — the person's face, expression, eyes, hair, skin, outfit, the background, the light, the mood, everything.
+                text: `Study this image — face, expression, eyes, outfit, background, light, mood, everything.
 
-Write EXACTLY 4 sentences, no more, no less — no labels, no formatting, just flowing text:
+Write EXACTLY 3 sentences, no labels, no formatting, just flowing text:
 
-Sentence 1 (witty beauty): A clever, witty observation about something specific you see — her face, expression, eyes, or a detail that stands out. Be playfully specific, not generic.
-Sentence 2 (witty scene): A witty remark about her overall vibe, energy, or the setting/background — something that makes her smile reading it.
-Sentence 3 (positivity boost): A warm, sincere line that makes her feel radiant and capable — specific to her energy in this image.
-Sentence 4 (closing boost): A short punchy line that makes her feel like today is her day — electric, confident, real.${birthdayLine}${avoidText}`
+Sentence 1: One witty, playful line about something specific and beautiful you see — her face, eyes, expression, or a standout detail.
+Sentence 2: One line about the scene — the background, lighting, vibe, or energy she gives off in this moment.
+Sentence 3: One short punchy confidence-boosting line that makes her feel unstoppable today.${birthdayLine}${avoidText}`
               }
             ]
           }
