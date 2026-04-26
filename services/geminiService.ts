@@ -27,16 +27,21 @@ export const getCheesyness = async (base64Image: string, usedLines: string[] = [
               { type: "image_url", image_url: { url: `data:image/jpeg;base64,${base64}` } },
               {
                 type: "text",
-                text: `Look at this image deeply — the person's face, expression, eyes, smile, glow, the light falling on them, the background, the overall mood and energy.
+                text: `Look at this image closely. Notice the person's face, eyes, expression, smile, skin, hair, the way the light hits them, their outfit, their energy, the background, the whole vibe.
 
-Write 2-3 warm poetic sentences: first beautifully describe what you see about this person's appearance and presence (be specific to the image), then end with one short punchy line that makes her feel unstoppable and confident for the rest of the day.
+Now write EXACTLY in this structure — no headers, no labels, just flowing text:
 
-Be cheesy, warm, and genuine. No labels, no formatting, no quotes.${avoidText}`
+Sentence 1: Describe one specific beautiful thing you see about her face or expression (mention something exact from the image).
+Sentence 2: Describe the overall glow, energy or presence she gives off in this moment (reference the light, background or mood).
+Sentence 3: One more warm poetic observation about her — her smile, her eyes, her style, or how she carries herself.
+Closing line: One short punchy confident line like "Today, the world is yours" or "Everything you want is already on its way to you" — make it feel electric and true.
+
+Be warm, poetic, cheesy and genuine. No bullet points, no labels, no quotes.${avoidText}`
               }
             ]
           }
         ],
-        max_tokens: 80,
+        max_tokens: 300,
         temperature: 1.0,
       }),
     });
